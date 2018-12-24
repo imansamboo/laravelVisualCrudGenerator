@@ -1,7 +1,10 @@
 <?php
 Route::get('/', function () { return redirect('/admin/home'); });
 Route::get('/cruds/create', 'CrudsController@create');
+Route::get('/cruds/createModel/{crudId}', 'CrudsController@createModel');
 Route::post('/cruds/store', 'CrudsController@store')->name('cruds.store');
+Route::post('/cruds/storeMigration', 'CrudsController@storeMigration')->name('cruds.storeMigration');
+Route::post('/cruds/storeModel', 'CrudsController@storeModel')->name('cruds.storeModel');
 
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');

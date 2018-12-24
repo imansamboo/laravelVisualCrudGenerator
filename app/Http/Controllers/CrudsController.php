@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Crud;
 use App\MigrationField;
+use App\ModelField;
 use Illuminate\Http\Request;
 
 class crudsController extends Controller
@@ -43,6 +44,22 @@ class crudsController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function createModel($crudId)
+    {
+        $crud = Crud::find($crudId);
+        MigrationField::where('crud_id', '=', $crudId)->pluck('name', 'id');
+        /*$crudFields = array();
+        foreach(MigrationField::where('crud_id', '=', $crudId)->get() as $crudField){
+            
+        }*/
+        return view('cruds.createModel', array('crud' => $crud));
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
@@ -51,7 +68,16 @@ class crudsController extends Controller
      */
     public function store(Request $request)
     {
+     
+    }
 
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function storeMigration(Request $request)
+    {
         $requestData = $request->all();
         $crud = Crud::create(
             array(
@@ -99,12 +125,33 @@ class crudsController extends Controller
         ]);
         //'cscs#string;csc#enum#options={"cs":"Cs" ,"ffe":"Ffe" ,"ddv":"Ddv"};'
         \Artisan::call('migrate');
+        return view('cruds.createModel');
+    }
 
+    public function storeModel(Request $request)
+    {
+        $data = $request->only('modelName', 'fillables');
+        //$fillables = ['title', 'body']
+        $fillables = "";
+        $fillables .= "[" ;
+        foreach($data['fillables'] as $fillable){
+            ModelField::create(
+                array(
+                    'migration_field_id' => $fillable,
+                    'isFillable' => 1,
+                    'name' => $data['modelName'],
+                )
+            );
+            $fillables .="'" .  MigrationField::find($fillable)->name . "',";
+        }
+        $fillables = substr($fillables, 0, -1);
+        $fillables .= "]" ;
+        \Artisan::call('crud:model',[
+            'name' => $data['modelName'],
+            '--fillable' => $fillables,
+            '--table' => strtolower($data['modelName']) . 's'
+        ]);
 
-
-        /*Post::create($requestData);
-
-        return redirect('posts')->with('flash_message', 'Post added!');*/
     }
 
     /**
