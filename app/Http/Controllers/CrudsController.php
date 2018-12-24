@@ -152,6 +152,12 @@ class crudsController extends Controller
             '--table' => strtolower($data['modelName']) . 's'
         ]);
 
+        \Artisan::call('crud:controller',[
+            'name' => $data['modelName'] . 'sController',
+            '--crud-name' => strtolower($data['modelName']) . 's',
+            '--model-name' => $data['modelName'] . 's',
+        ]);
+
     }
 
     /**
