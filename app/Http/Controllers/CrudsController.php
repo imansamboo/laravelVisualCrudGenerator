@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
@@ -23,7 +22,7 @@ class crudsController extends Controller
 
         if (!empty($keyword)) {
             $posts = Post::where('title', 'LIKE', "%$keyword%")
-                ->orWhere('content', 'LIKE', "%$keyword%")
+9                ->orWhere('content', 'LIKE', "%$keyword%")
                 ->orWhere('category', 'LIKE', "%$keyword%")
                 ->latest()->paginate($perPage);
         } else {
@@ -59,7 +58,7 @@ class crudsController extends Controller
                 'name' => $requestData['name']
             )
         );
-        $schema ='';
+        $schema ="";
         $number = $requestData['number'];
         for($i=1; $i < $number + 1; $i++){
             MigrationField::create(
@@ -71,19 +70,35 @@ class crudsController extends Controller
                     'nullable' => 0,
                 )
             );
-            $schema .= "'" .$requestData['field_name' . $i]. "#" .  $requestData['fieldType' . $i];
+            $schema .= $requestData['field_name' . $i]. "#" .  $requestData['fieldType' . $i];
             if( $requestData['options' . $i] != null &&  $requestData['options' . $i] != ''){
-                $schema .= '#options={"' . $requestData['options'. $i] . '":"' . $requestData['options'. $i] . '"};';
+                $options = explode('#', $requestData['options' . $i]);
+                $schema .= '#options={';
+                $i = 0;
+                $count = count($options);
+                foreach ($options as $option){
+                    $i++;
+                    if($i < $count){
+                        $schema .= '"' . $option . '":"' . ucwords($option) . '" ,';
+                    }else{
+                        $schema .= '"' . $option . '":"' . ucwords($option) . '"';
+                    }
+                }
+                $schema .= '};';
+
             }else{
-                $schema .= ';';
+                $schema .= ";";
             }
         }
+        $schema .= "";
+        echo $schema;
 
-        Artisan::call('crud:migration',[
+        \Artisan::call('crud:migration',[
             'name' => $requestData['name'],
-            '--schema' => 'title#string;body#enum#options={"technology": "Technology", "tips": "Tips"};'
+            '--schema' => $schema,
         ]);
-        Artisan::call('migrate');
+        //'cscs#string;csc#enum#options={"cs":"Cs" ,"ffe":"Ffe" ,"ddv":"Ddv"};'
+        \Artisan::call('migrate');
 
 
 

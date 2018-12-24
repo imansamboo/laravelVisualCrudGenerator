@@ -108,6 +108,30 @@
             </li>
             {{--end of  view for managing crud generator--}}
 
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-users"></i>
+                    <span class="title">CRUD GENERATOR</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li class="{{ $request->segment(2) == 'permissions' ? 'active active-sub' : '' }}">
+                        <a href="{{ url('/cruds/create') }}">
+                            <i class="fa fa-briefcase"></i>
+                            <span class="title">
+                                Create Migration
+                            </span>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+
+
             <li class="{{ $request->segment(1) == 'ques' ? 'active' : '' }}">
                 <a href="{{ route('ques.index') }}">
                     <i class="fa fa-key"></i>

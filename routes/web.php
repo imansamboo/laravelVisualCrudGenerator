@@ -43,7 +43,7 @@ Route::get('/foo', function () {
         '--form-helper' => 'html'
     ]);*/
     Artisan::call('crud:migration',[
-        'name' => 'posts',
+        'name' => 'fas',
         '--schema' => 'title#string;body#enum#options={"technology": "Technology", "tips": "Tips"};'
     ]);
     Artisan::call('migrate');
