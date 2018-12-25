@@ -128,7 +128,42 @@ class crudsController extends Controller
         return view('cruds.createModel');
     }
 
+    /**
+     * @param Request $request
+     */
     public function storeModel(Request $request)
+    {
+        $data = $request->only('modelName', 'fillables');
+        //$fillables = ['title', 'body']
+        $fillables = "";
+        $fillables .= "[" ;
+        foreach($data['fillables'] as $fillable){
+            ModelField::create(
+                array(
+                    'migration_field_id' => $fillable,
+                    'isFillable' => 1,
+                    'name' => $data['modelName'],
+                )
+            );
+            $fillables .="'" .  MigrationField::find($fillable)->name . "',";
+        }
+        $fillables = substr($fillables, 0, -1);
+        $fillables .= "]" ;
+        \Artisan::call('crud:model',[
+            'name' => $data['modelName'],
+            '--fillable' => $fillables,
+            '--table' => strtolower($data['modelName']) . 's'
+        ]);
+
+        \Artisan::call('crud:controller',[
+            'name' => $data['modelName'] . 'sController',
+            '--crud-name' => strtolower($data['modelName']) . 's',
+            '--model-name' => $data['modelName'] . 's',
+        ]);
+
+    }
+
+    public function storeView(Request $request)
     {
         $data = $request->only('modelName', 'fillables');
         //$fillables = ['title', 'body']
