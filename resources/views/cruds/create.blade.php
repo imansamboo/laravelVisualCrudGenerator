@@ -4,7 +4,8 @@
     <div class="container">
         <div class="row">
             <div class="col-md-9">
-                <h3>New Crud</h3>
+                <button class="btn-info" style="border-color: #DBDBDB">New Crud</button>
+                <h1>step 1</h1>
                 {!! Form::open(['route' => 'cruds.storeMigration'])!!}
                 <div class="form-group {!! $errors->has('name') ? 'has-error' : '' !!}">
                     {!! Form::label('name', 'Name') !!}

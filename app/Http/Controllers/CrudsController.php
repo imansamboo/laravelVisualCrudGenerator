@@ -59,6 +59,23 @@ class crudsController extends Controller
         return view('cruds.createModel', array('crud' => $crud));
     }
 
+    public function createView($crudId)
+    {
+
+        $configView = [
+            'string' => ['string' => 'string', 'text' => 'text', 'select' => 'select'],
+            'integer' => ['number' => 'number', 'select' => 'select'],
+            'enum' => ['select' => 'select'],
+        ];
+        $crud = Crud::find($crudId);
+        /*$crudFields = array();
+        foreach(MigrationField::where('crud_id', '=', $crudId)->get() as $crudField){
+
+        }*/
+
+        return view('cruds.createView', array('crud' => $crud, 'configView' => $configView));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -165,6 +182,7 @@ class crudsController extends Controller
 
     public function storeView(Request $request)
     {
+        dd($_POST);
         $data = $request->only('modelName', 'fillables');
         //$fillables = ['title', 'body']
         $fillables = "";

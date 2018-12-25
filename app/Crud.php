@@ -10,9 +10,9 @@ class Crud extends Model
     protected $fillable = ['name'];
 
 
-    public function migrationField()
+    public function migrationFields()
     {
-        return $this->belongsToMany(MigrationField::class);
+        return $this->hasMany(MigrationField::class);
     }
 
 

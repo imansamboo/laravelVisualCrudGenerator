@@ -8,11 +8,11 @@ use App\Crud;
 class MigrationField extends Model
 {
     protected $fillable = ['crud_id', 'type', 'options', 'name', 'nullable'];
-
+    protected $table = 'migration_fields';
 
     public function migration()
     {
-        return $this->hasOne(Crud::class);
+        return $this->belongsTo(Crud::class);
     }
 
 
