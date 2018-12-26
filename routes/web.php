@@ -73,3 +73,5 @@ Route::resource('admin/view-options', 'Admin\\ViewOptionsController');
 Route::resource('admin/crud-options', 'Admin\\CrudOptionsController');
 Route::resource('admin/model-options', 'Admin\\ModelOptionsController');
 Route::resource('admin/fishes', 'Admin\\FishesController');
+
+Route::resource('mersads', 'MersadsController');

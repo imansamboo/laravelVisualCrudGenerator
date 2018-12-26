@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\FormField;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use File;
 
 use App\Crud;
 use App\MigrationField;
@@ -96,12 +97,16 @@ class crudsController extends Controller
      */
     public function storeMigration(Request $request)
     {
+        
         $requestData = $request->all();
         $crud = Crud::create(
             array(
                 'name' => $requestData['name']
             )
         );
+        $routeFile = base_path('routes/web.php');
+
+        File::append($routeFile, "\n" . implode("\n", ["Route::resource('" . $requestData['name'] . "', '" . ucwords($requestData['name']) . "Controller" . "');"]));
         $schema ="";
         $number = $requestData['number'];
         for($i=1; $i < $number + 1; $i++){
@@ -176,7 +181,7 @@ class crudsController extends Controller
         \Artisan::call('crud:controller',[
             'name' => $data['modelName'] . 'sController',
             '--crud-name' => strtolower($data['modelName']) . 's',
-            '--model-name' => $data['modelName'] . 's',
+            '--model-name' => $data['modelName'],
         ]);
 
     }
