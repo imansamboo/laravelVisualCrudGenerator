@@ -57,6 +57,8 @@ Route::get('/foo', function () {
 });
 
 Route::resource('admin/posts', 'Admin\\PostsController');
+Route::resource('/samples', 'SamplesController');
+Route::resource('/admins', 'AdminsController');
 
 /*
  crud:generate photos --fields='title#string; content#text;

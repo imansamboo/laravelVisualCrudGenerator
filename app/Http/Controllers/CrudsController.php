@@ -184,6 +184,7 @@ class crudsController extends Controller
     public function storeView(Request $request)
     {
         $migrationFields = MigrationField::where('crud_id', '=', $_POST['id'])->get();
+        $fields = '';
         foreach($migrationFields as $migrationField){
             if($migrationField->type == 'enum'){
                 FormField::create(
@@ -193,7 +194,40 @@ class crudsController extends Controller
                         'form_field_options' => $migrationField->options,
                     )
                 );
+                $schema = '';
+                $options = explode('#', $migrationField->options);
+                $i = 0;
+                $count = count($options);
+                foreach ($options as $option){
+                    $i++;
+                    if($i < $count){
+                        $schema .= '"' . $option . '":"' . ucwords($option) . '" ,';
+                    }else{
+                        $schema .= '"' . $option . '":"' . ucwords($option) . '"';
+                    }
+                }
+                $fields .= $migrationField->name . '#select#options={'. $schema . '};';
+                //echo $fields . "\n";
             }else{
+                if($_POST['viewType-' . $migrationField->id] == 'select'){
+                    $schema = '';
+                    $options = explode('#', $_POST['viewOptions-' . $migrationField->id]);
+                    $i = 0;
+                    $count = count($options);
+                    foreach ($options as $option){
+                        $i++;
+                        if($i < $count){
+                            $schema .= '"' . $option . '":"' . ucwords($option) . '" ,';
+                        }else{
+                            $schema .= '"' . $option . '":"' . ucwords($option) . '"';
+                        }
+                    }
+                    $fields .= $migrationField->name . '#select#options={'. $schema . '};';
+                    //echo $fields . "\n";
+                }else{
+                    $fields .= $migrationField->name . '#' . $_POST['viewType-' . $migrationField->id] . ';';
+                    //echo $fields . "\n";
+                }
                 FormField::create(
                     array(
                         'migration_field_id' => $migrationField->id,
@@ -203,35 +237,12 @@ class crudsController extends Controller
                 );
             }
         }
-        dd($_POST['id']);
-        $data = $request->only('modelName', 'fillables');
-        //$fillables = ['title', 'body']
-        $fillables = "";
-        $fillables .= "[" ;
-        foreach($data['fillables'] as $fillable){
-            ModelField::create(
-                array(
-                    'migration_field_id' => $fillable,
-                    'isFillable' => 1,
-                    'name' => $data['modelName'],
-                )
-            );
-            $fillables .="'" .  MigrationField::find($fillable)->name . "',";
-        }
-        $fillables = substr($fillables, 0, -1);
-        $fillables .= "]" ;
-        \Artisan::call('crud:model',[
-            'name' => $data['modelName'],
-            '--fillable' => $fillables,
-            '--table' => strtolower($data['modelName']) . 's'
+        $fields = substr($fields, 0, -1);
+        echo $fields . "\n";
+        \Artisan::call('crud:view',[
+            'name' => Crud::find($_POST['id'])->name,
+            '--fields' => $fields,
         ]);
-
-        \Artisan::call('crud:controller',[
-            'name' => $data['modelName'] . 'sController',
-            '--crud-name' => strtolower($data['modelName']) . 's',
-            '--model-name' => $data['modelName'] . 's',
-        ]);
-
     }
 
     /**
