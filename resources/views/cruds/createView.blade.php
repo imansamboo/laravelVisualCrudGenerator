@@ -16,6 +16,7 @@
 
                         {!! $errors->first('viewType-' . $migrationField->id, '<p class="help-block">:message</p>') !!}
                     </div>
+                <input type="hidden" name="id" value="{{$crud->id}}">
                 @if($migrationField->type == 'enum')
                     <h3>Items</h3>
                     <ul>

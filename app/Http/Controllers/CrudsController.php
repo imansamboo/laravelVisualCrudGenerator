@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\FormField;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -182,7 +183,27 @@ class crudsController extends Controller
 
     public function storeView(Request $request)
     {
-        dd($_POST);
+        $migrationFields = MigrationField::where('crud_id', '=', $_POST['id'])->get();
+        foreach($migrationFields as $migrationField){
+            if($migrationField->type == 'enum'){
+                FormField::create(
+                    array(
+                        'migration_field_id' => $migrationField->id,
+                        'form_field_type' => 'select',
+                        'form_field_options' => $migrationField->options,
+                    )
+                );
+            }else{
+                FormField::create(
+                    array(
+                        'migration_field_id' => $migrationField->id,
+                        'form_field_type' => $_POST['viewType-' . $migrationField->id],
+                        'form_field_options' => $_POST['viewOptions-' . $migrationField->id],
+                    )
+                );
+            }
+        }
+        dd($_POST['id']);
         $data = $request->only('modelName', 'fillables');
         //$fillables = ['title', 'body']
         $fillables = "";
