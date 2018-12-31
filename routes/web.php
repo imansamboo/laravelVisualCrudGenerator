@@ -75,3 +75,8 @@ Route::resource('admin/model-options', 'Admin\\ModelOptionsController');
 Route::resource('admin/fishes', 'Admin\\FishesController');
 
 Route::resource('mersads', 'MersadsController');
+Route::resource('aliss', 'AlissController');
+Route::resource('amins', 'AminsController');
+Route::resource('javads', 'JavadsController');
+Route::resource('vahedas', 'VahedasController');
+Route::resource('agents', 'AgentsController');

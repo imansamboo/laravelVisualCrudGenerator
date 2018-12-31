@@ -148,7 +148,7 @@ class crudsController extends Controller
         ]);
         //'cscs#string;csc#enum#options={"cs":"Cs" ,"ffe":"Ffe" ,"ddv":"Ddv"};'
         \Artisan::call('migrate');
-        return view('cruds.createModel');
+        return redirect(url('/cruds/createModel/' . $crud->id));
     }
 
     /**
@@ -183,6 +183,7 @@ class crudsController extends Controller
             '--crud-name' => strtolower($data['modelName']) . 's',
             '--model-name' => $data['modelName'],
         ]);
+        return redirect(url('/cruds/createView/'. Crud::where('name', '=', strtolower($data['modelName']) . 's')->get()[0]->id) );
 
     }
 
@@ -248,6 +249,7 @@ class crudsController extends Controller
             'name' => Crud::find($_POST['id'])->name,
             '--fields' => $fields,
         ]);
+        return redirect(url('/' . Crud::find($_POST['id'])->name));
     }
 
     /**
